@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Envelope Effect (texto completo)</title>
+<link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing: border-box; }
+html,body{ height:100%; }
+body{ font-family:'Bad Script', cursive; -webkit-font-smoothing:antialiased; }
+
+#wrapper{
+  background: radial-gradient(ellipse at center, hsla(0,63%,57%,1) 0%, hsla(0,84%,33%,1) 100%);
+  width:100%; height:2000px;
+}
+
+#perspectiva{
+  position:fixed; top:200px; left:50%; margin-left:-200px; perspective:1000px;
+}
+
+#contenedor{
+  box-shadow: 0px 2px 10px rgba(0,0,0,.25);
+  width:400px; height:280px; transform-style: preserve-3d;
+}
+
+.cara{
+  position:absolute; top:0; left:0; width:100%; height:100%; backface-visibility:hidden;
+}
+
+.frontal{
+  background: linear-gradient(to bottom, rgba(236,233,198,1) 0%, rgba(245,245,245,1) 50%, rgba(236,233,198,1) 100%);
+  z-index:20;
+}
+
+.frontal h1{
+  color: #333; text-shadow:0 1px 1px #fff; font-size:2rem; text-align:center; margin-top:110px;
+}
+.frontal h1 span{ color:#7f7f7f; text-shadow:0 1px 1px #fff; font-size:1.5rem; display:block; }
+
+.trasera{
+  background: linear-gradient(to bottom, #f5f5e8 0%, #ffffff 100%);
+  transform: rotateY(-180deg);
+}
+
+#abrir{
+  position:absolute; top:0; left:0; height:0; max-width:400px; width:100%;
+  border-top:175px solid #ddd; border-left:160px solid transparent; border-right:160px solid transparent;
+  transform-origin:center top; z-index:10;
+}
+
+#partes{
+  position:absolute; top:0; left:0; width:0; height:0;
+  border-left:200px solid #eee; border-top:140px solid transparent; border-bottom:140px solid transparent; z-index:5;
+}
+#partes:after{ content:""; position:absolute; bottom:-140px; left:-200px; height:0; width:80px; border-bottom:175px solid #fafafa; border-left:160px solid transparent; border-right:160px solid transparent; }
+#partes:before{ content:""; position:absolute; top:-140px; right:-200px; width:0; height:0; border-right:200px solid #eee; border-top:140px solid transparent; border-bottom:140px solid transparent; }
+
+#carta{
+  background: linear-gradient(to bottom, #f5f5e8 0%, #fff 70%, #fbfbfb 100%);
+  box-shadow: 0 2px 5px rgba(0,0,0,.15);
+  border-radius:5px;
+  position:absolute;
+  top:3px; left:0;
+  margin:0 0 0 5px;
+  width:390px;
+  height:500px; /* altura maior */
+  overflow-y:auto; /* rolagem interna */
+  z-index:1;
+}
+
+#carta hgroup{ margin-top:20px; }
+#carta hgroup h1{ font-size:1.6em; color:#999; text-align:center; text-shadow:0 2px 1px #fff; }
+#carta hgroup h2{ font-size:1em; color: #e04e4e; margin-top:-20px; text-align:center; text-shadow:0 1px 1px #fff; }
+
+#carta p{
+  color:#333; text-shadow:0 1px 1px #fff; font-size:1.2rem; line-height:1.45em; margin:30px 50px 30px 50px;
+}
+#carta p:first-letter{
+  color:#e04e4e; font-size:2.5em; float:left; line-height:1.2em; padding:10px 10px 0 0;
+}
+</style>
+</head>
+<body>
+<div id="perspectiva">
+<div id="contenedor">
+  <div class="cara frontal">
+    <h1 class="Pai">Pai<br><span>Pra baixo ↓</span></h1>
+  </div>
+  <div class="cara trasera">
+    <div id="abrir"></div>
+    <div id="partes"></div>
+    <div id="carta">
+      <hgroup>
+        <h1>Desça mais</h1>
+        <h2>↓</h2>
+      </hgroup>
+      <p>
+  Eu sei que nós ficamos muito afastados durante muito tempo, e hoje entendo que isso foi, em grande parte, por minha escolha. Mas quero que saiba que isso já vem mudando há algum tempo. Tenho pensado bastante sobre amadurecer e melhorar a nossa relação, e sobre como podemos ter uma vida melhor juntos.<br><br>
+  Espero que o senhor também consiga deixar o passado para trás, porque já está tudo bem. O que tinha que acontecer, aconteceu. Nem sempre a gente pode escolher tudo, e o senhor sabe que cada escolha traz suas consequências. Às vezes, algo parece pequeno, mas acaba sendo mais profundo do que imaginamos. Mas acontece…<br><br>
+  Eu amo você. Amo meus irmãos, amo minha família. E isso é algo que nunca vai mudar. São heranças que carrego comigo e que são mais valiosas do que qualquer outra coisa. Eu carrego a sua cor, da qual tanto tenho orgulho; carrego um físico cuja genética veio do senhor, e tenho um jeito muito parecido com o seu em muitas coisas — e não me arrependo disso.<br><br>
+  Por mais que o senhor não tenha conseguido estar presente em tantos momentos, e eu também tenha deixado isso acontecer, os momentos em que o senhor esteve lá foram importantes para mim. Aprendi coisas com o senhor, mesmo que em pouco tempo, e acredito que também ensinei algo de volta.<br><br>
+  Quero que saiba que eu te amo. E que eu estou aqui.
+</p>
+
+    </div>
+  </div>
+</div>
+</div>
+<div id="wrapper"></div>
+
+<script>
+(function(){
+  var cont = document.getElementById('contenedor');
+  var abrir = document.getElementById('abrir');
+  var carta = document.getElementById('carta');
+  var h2 = document.querySelector('#carta hgroup h2');
+  var perspectiva = document.getElementById('perspectiva');
+
+  function onScroll(){
+    var scr = window.scrollY || window.pageYOffset;
+
+    if (scr >= 100) {
+      cont.style.transition = 'all 1s';
+      cont.style.transform = 'rotateY(180deg)';
+
+      abrir.style.transition = 'all 1s .5s';
+      abrir.style.transform = 'rotateX(180deg)';
+      abrir.style.zIndex = '0';
+    } else {
+      cont.style.transition = 'all 1s .5s';
+      cont.style.transform = 'rotateY(0deg)';
+
+      abrir.style.transition = 'all 1s';
+      abrir.style.transform = 'rotateX(0deg)';
+      abrir.style.zIndex = '10';
+    }
+
+    if (scr >= 500) {
+      carta.style.transition = 'all .5s 1s';
+      carta.style.top = '-550px';
+      perspectiva.style.transition = 'all 1s';
+      perspectiva.style.transform = 'translateY(450px)';
+      h2.style.transition = 'all 1s';
+      h2.style.transform = 'rotateZ(180deg)';
+    } else {
+      carta.style.transition = 'all .5s';
+      carta.style.top = '3px';
+      perspectiva.style.transform = 'translateY(0px)';
+      h2.style.transform = 'rotateZ(0deg)';
+    }
+  }
+
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>
